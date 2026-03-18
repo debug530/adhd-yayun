@@ -1,0 +1,55 @@
+{
+  "name": "ADHD生活Bingo",
+  "short_name": "Bingo",
+  "description": "为ADHD人群提供低压力、游戏化的日常任务管理工具",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8F9FA",
+  "theme_color": "#4A90E2",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%234A90E2%22>🎯</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://api.dicebear.com/7.x/shapes/svg?seed=bingo&backgroundColor=4a90e2&size=192",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://api.dicebear.com/7.x/shapes/svg?seed=bingo&backgroundColor=4a90e2&size=512",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "health", "lifestyle"],
+  "shortcuts": [
+    {
+      "name": "开始新的一天",
+      "short_name": "新开始",
+      "description": "重置棋盘开始新的一天",
+      "url": "/?action=reset"
+    },
+    {
+      "name": "查看进度",
+      "short_name": "进度",
+      "description": "查看今日完成情况",
+      "url": "/?action=stats"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://placehold.co/600x1200/4a90e2/ffffff/png?text=ADHD生活Bingo",
+      "sizes": "600x1200",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

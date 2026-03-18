@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ADHD生活Bingo</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部标题和模板区域 -->
+        <header class="header">
+            <h1><i class="fas fa-star"></i> ADHD生活Bingo</h1>
+            <p class="subtitle">低压力、游戏化的日常任务管理工具</p>
+            
+            <div class="template-section">
+                <div class="template-buttons">
+                    <button class="template-btn" data-template="daily">
+                        <i class="fas fa-home"></i> 日常生存版
+                    </button>
+                    <button class="template-btn" data-template="work">
+                        <i class="fas fa-briefcase"></i> 学习工作版
+                    </button>
+                    <button class="template-btn" data-template="relax">
+                        <i class="fas fa-couch"></i> 极简放松版
+                    </button>
+                </div>
+                
+
+            </div>
+        </header>
+
+        <!-- Bingo棋盘区域 -->
+        <main class="main-content">
+            <div class="bingo-board" id="bingoBoard">
+                <!-- 4x4网格将通过JS动态生成 -->
+            </div>
+            
+            <!-- Bingo庆祝动画 -->
+            <div class="bingo-celebration" id="bingoCelebration">
+                <div class="celebration-content">
+                    <div class="confetti"></div>
+                    <div class="confetti"></div>
+                    <div class="confetti"></div>
+                    <h1 class="bingo-text">BINGO！</h1>
+                    <p class="bingo-subtext">恭喜完成一条线！🎉</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- 控制面板 -->
+        <footer class="footer">
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-label">已完成</span>
+                    <span class="stat-value" id="completedCount">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Bingo线</span>
+                    <span class="stat-value" id="bingoCount">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">进度</span>
+                    <span class="stat-value" id="progressPercent">0%</span>
+                </div>
+            </div>
+            
+            <!-- 底部按钮区域 -->
+            <div class="bottom-buttons">
+                <button class="bottom-btn" id="randomPlaceBtn">
+                    <i class="fas fa-random"></i> 随机放置
+                </button>
+                <button class="bottom-btn" id="resetBtn">
+                    <i class="fas fa-redo"></i> 重置棋盘
+                </button>
+                <button class="bottom-btn" id="shareBtn">
+                    <i class="fas fa-share-alt"></i> 分享状态
+                </button>
+                <button class="bottom-btn" id="clearAllBtn">
+                    <i class="fas fa-trash"></i> 清空所有
+                </button>
+            </div>
+            
+            <div class="instructions">
+                <p><i class="fas fa-mouse-pointer"></i> 点击格子标记完成/取消 • <i class="fas fa-hand-point-up"></i> 长按格子编辑任务内容</p>
+            </div>
+</footer>
+
+        <!-- 编辑任务模态框 -->
+        <div class="modal" id="editModal">
+            <div class="modal-content">
+                <h2><i class="fas fa-edit"></i> 编辑任务</h2>
+                <input type="text" id="taskInput" maxlength="10" placeholder="输入任务内容（最多10字）">
+                <div class="char-count">
+                    <span id="charCount">0</span>/10
+                </div>
+                
+                <!-- 编辑按钮（保存/清空/取消） -->
+                <div class="modal-buttons">
+                    <button class="modal-btn save-btn" id="saveEditBtn">
+                        <i class="fas fa-check"></i> 保存
+                    </button>
+                    <button class="modal-btn clear-btn" id="clearEditBtn">
+                        <i class="fas fa-eraser"></i> 清空
+                    </button>
+                    <button class="modal-btn cancel-btn" id="cancelEditBtn">
+                        <i class="fas fa-times"></i> 取消
+                    </button>
+                </div>
+                
+                <!-- 快捷短语（整合到编辑界面） -->
+                <div class="edit-quick-phrases">
+                    <h4><i class="fas fa-bolt"></i> 快捷短语</h4>
+                    <div class="edit-phrase-buttons">
+                        <button class="edit-phrase-btn" data-phrase="喝2杯水">喝2杯水</button>
+                        <button class="edit-phrase-btn" data-phrase="整理桌面">整理桌面</button>
+                        <button class="edit-phrase-btn" data-phrase="运动15min">运动15min</button>
+                        <button class="edit-phrase-btn" data-phrase="专注25min">专注25min</button>
+                        <button class="edit-phrase-btn" data-phrase="出门走走">出门走走</button>
+                        <button class="edit-phrase-btn" data-phrase="晒太阳">晒太阳</button>
+                        <button class="edit-phrase-btn" data-phrase="阅读30min">阅读30min</button>
+                        <button class="edit-phrase-btn" data-phrase="冥想10min">冥想10min</button>
+                        <button class="edit-phrase-btn" data-phrase="写日记">写日记</button>
+                        <button class="edit-phrase-btn" data-phrase="联系朋友">联系朋友</button>
+                        <button class="edit-phrase-btn" data-phrase="整理衣柜">整理衣柜</button>
+                        <button class="edit-phrase-btn" data-phrase="学习新技能">学习新技能</button>
+                        <button class="edit-phrase-btn" data-phrase="早睡早起">早睡早起</button>
+                        <button class="edit-phrase-btn" data-phrase="吃健康餐">吃健康餐</button>
+                        <button class="edit-phrase-btn" data-phrase="记账">记账</button>
+                        <button class="edit-phrase-btn" data-phrase="计划明天">计划明天</button>
+                    </div>
+                </div>
+                
+                <div class="modal-buttons">
+                    <button class="modal-btn save-btn" id="saveBtn">
+                        <i class="fas fa-check"></i> 保存
+                    </button>
+                    <button class="modal-btn clear-text-btn" id="clearTextBtn">
+                        <i class="fas fa-eraser"></i> 清空文字
+                    </button>
+                    <button class="modal-btn cancel-btn" id="cancelBtn">
+                        <i class="fas fa-times"></i> 取消
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分享模态框 -->
+        <div class="modal" id="shareModal">
+            <div class="modal-content">
+                <h2><i class="fas fa-share-alt"></i> 分享你的Bingo状态</h2>
+                <div class="share-preview" id="sharePreview">
+                    <!-- 分享预览内容 -->
+                </div>
+                <div class="share-options">
+                    <button class="share-option" id="copyLinkBtn">
+                        <i class="fas fa-copy"></i> 复制链接
+                    </button>
+                    <button class="share-option" id="saveImageBtn">
+                        <i class="fas fa-image"></i> 保存图片
+                    </button>
+                </div>
+                <button class="modal-btn close-share-btn" id="closeShareBtn">
+                    <i class="fas fa-times"></i> 关闭
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="fix-modal.js"></script>
+    <script src="update-edit-phrases.js"></script>
+    <script src="全面优化.js"></script>
+    <script src="最终优化修正.js"></script>
+    <script src="界面优化修正.js"></script>
+    <script>
+        // 注册Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('ServiceWorker 注册成功:', registration.scope);
+                }, function(err) {
+                    console.log('ServiceWorker 注册失败:', err);
+                });
+            });
+        }
+        
+        // 离线检测
+        window.addEventListener('online', function() {
+            console.log('网络已连接');
+            if (window.bingoApp) {
+                window.bingoApp.showNotification('网络已恢复连接！');
+            }
+        });
+        
+        window.addEventListener('offline', function() {
+            console.log('网络已断开');
+            if (window.bingoApp) {
+                window.bingoApp.showNotification('当前处于离线模式，数据将保存在本地。');
+            }
+        });
+        
+        // 初始化模态框修复
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(setupModalFix, 1000);
+        });
+    </script>
+</body>
+</html>

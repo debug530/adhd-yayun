@@ -1,0 +1,1144 @@
+/* ADHD生活Bingo - 样式文件 */
+/* 设计原则：低压力、高对比度、友好交互 */
+
+:root {
+    /* 配色方案 - 低饱和度，避免视觉疲劳 */
+    --primary-color: #4A90E2;      /* 主蓝色 */
+    --secondary-color: #F5A623;    /* 辅助橙色 */
+    --success-color: #7ED321;      /* 成功绿色 */
+    --light-bg: #F8F9FA;           /* 浅背景 */
+    --card-bg: #FFFFFF;            /* 卡片背景 */
+    --text-primary: #333333;       /* 主要文字 */
+    --text-secondary: #666666;     /* 次要文字 */
+    --border-color: #E0E0E0;       /* 边框颜色 */
+    --shadow-light: rgba(0, 0, 0, 0.05);
+    --shadow-medium: rgba(0, 0, 0, 0.1);
+    
+    /* 已完成格子颜色 */
+    --completed-color: #E3F2FD;    /* 浅蓝 */
+    --completed-alt: #FFF9C4;      /* 明黄 */
+    
+    /* 字体 */
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    
+    /* 间距 */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    
+    /* 圆角 */
+    --border-radius: 12px;
+    --border-radius-sm: 8px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: var(--font-family);
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: var(--spacing-md);
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* 头部样式 */
+.header {
+    text-align: center;
+    padding: var(--spacing-lg);
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px var(--shadow-light);
+    animation: fadeIn 0.5s ease-out;
+}
+
+.header h1 {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-bottom: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: var(--spacing-lg);
+}
+
+/* 模板区域 */
+.template-section {
+    margin-top: var(--spacing-lg);
+}
+
+.template-section h2 {
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-md);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.template-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.template-btn {
+    padding: var(--spacing-md);
+    background: var(--light-bg);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.template-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.template-btn:active {
+    transform: translateY(0);
+}
+
+/* 快捷短语 */
+.quick-phrases h3 {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.phrase-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    justify-content: center;
+}
+
+.phrase-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.phrase-btn:hover {
+    background: var(--secondary-color);
+    color: white;
+    border-color: var(--secondary-color);
+}
+
+/* Bingo棋盘 */
+.main-content {
+    flex: 1;
+    position: relative;
+}
+
+.bingo-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: var(--spacing-sm);
+    aspect-ratio: 1;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: var(--spacing-sm);
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: 0 6px 20px var(--shadow-medium);
+}
+
+.bingo-cell {
+    background: var(--light-bg);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--spacing-sm);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    position: relative;
+    overflow: hidden;
+}
+
+.bingo-cell:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px var(--shadow-light);
+}
+
+.bingo-cell.completed {
+    background: var(--completed-color);
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+    animation: cellComplete 0.5s ease;
+}
+
+.bingo-cell.completed.alt {
+    background: var(--completed-alt);
+    border-color: var(--secondary-color);
+}
+
+.bingo-cell.completed::after {
+    content: '✓';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: var(--success-color);
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+/* Bingo庆祝动画 */
+.bingo-celebration {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.celebration-content {
+    text-align: center;
+    animation: bounceIn 0.6s ease;
+}
+
+.bingo-text {
+    font-size: 4rem;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-md);
+    text-shadow: 2px 2px 4px var(--shadow-medium);
+    animation: pulse 1s infinite;
+}
+
+.bingo-subtext {
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+}
+
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: var(--primary-color);
+    animation: confettiFall 3s linear infinite;
+}
+
+.confetti:nth-child(2) {
+    background: var(--secondary-color);
+    animation-delay: 0.5s;
+    left: 20%;
+}
+
+.confetti:nth-child(3) {
+    background: var(--success-color);
+    animation-delay: 1s;
+    left: 80%;
+}
+
+/* 底部控制面板 */
+.footer {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    box-shadow: 0 -4px 12px var(--shadow-light);
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+}
+
+.stat {
+    padding: var(--spacing-md);
+    background: var(--light-bg);
+    border-radius: var(--border-radius-sm);
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.control-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.control-btn {
+    padding: var(--spacing-md);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.reset-btn {
+    background: var(--light-bg);
+    color: var(--text-primary);
+}
+
+.reset-btn:hover {
+    background: #E3F2FD;
+}
+
+.clear-btn {
+    background: #FFEBEE;
+    color: #D32F2F;
+}
+
+.clear-btn:hover {
+    background: #FFCDD2;
+}
+
+.export-btn {
+    background: #E8F5E9;
+    color: #388E3C;
+}
+
+.export-btn:hover {
+    background: #C8E6C9;
+}
+
+.instructions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
+}
+
+.instructions p {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+/* 模态框 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-xl);
+    width: 90%;
+    max-width: 400px;
+    animation: slideUp 0.3s ease;
+}
+
+.modal-content h2 {
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+#taskInput {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 1rem;
+    margin-bottom: var(--spacing-sm);
+    transition: border-color 0.2s ease;
+}
+
+#taskInput:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.char-count {
+    text-align: right;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-lg);
+}
+
+.modal-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-sm);
+}
+
+.modal-btn {
+    padding: var(--spacing-md);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.save-btn {
+    background: var(--primary-color);
+    color: white;
+}
+
+.save-btn:hover {
+    background: #357ABD;
+}
+
+.clear-text-btn {
+    background: var(--light-bg);
+    color: var(--text-primary);
+}
+
+.clear-text-btn:hover {
+    background: #E0E0E0;
+}
+
+.cancel-btn {
+    background: #F5F5F5;
+    color: var(--text-secondary);
+}
+
+.cancel-btn:hover {
+    background: #E0E0E0;
+}
+
+/* 分享模态框 */
+.share-preview {
+    background: var(--light-bg);
+    border-radius: var(--border-radius-sm);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+}
+
+.share-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.share-option {
+    padding: var(--spacing-md);
+    background: var(--light-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.share-option:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.close-share-btn {
+    width: 100%;
+    background: var(--light-bg);
+    color: var(--text-primary);
+}
+
+.close-share-btn:hover {
+    background: #E0E0E0;
+}
+
+/* 动画 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cellComplete {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .bingo-cell {
+        font-size: 0.9rem;
+        padding: var(--spacing-xs);
+    }
+    
+    .template-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .share-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        padding: var(--spacing-xl);
+    }
+    
+    .bingo-board {
+        max-width: 500px;
+    }
+}
+
+/* 横屏适配 */
+@media (orientation: landscape) and (max-height: 600px) {
+    .container {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .header {
+        width: 100%;
+    }
+    
+    .main-content {
+        flex: 2;
+    }
+    
+    .footer {
+        flex: 1;
+    }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --light-bg: #2D3748;
+        --card-bg: #1A202C;
+        --text-primary: #E2E8F0;
+        --text-secondary: #A0AEC0;
+        --border-color: #4A5568;
+        --completed-color: #2C5282;
+        --completed-alt: #744210;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    }
+}/* 修复编辑模态框遮挡问题 - 添加于 Wed Mar 18 07:33:09 PM CST 2026 */
+/* 修复编辑模态框遮挡问题 */
+
+/* 编辑模态框样式修复 */
+#editModal .modal-content {
+    max-height: 80vh; /* 限制最大高度 */
+    overflow-y: auto; /* 允许滚动 */
+    margin-top: 10vh; /* 从顶部开始，留出空间 */
+}
+
+/* 快捷短语区域调整 */
+.quick-phrases {
+    position: relative;
+    z-index: 1; /* 确保在模态框下方 */
+    margin-top: var(--spacing-md);
+}
+
+/* 模态框按钮布局优化 */
+.modal-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+}
+
+.modal-btn {
+    flex: 1;
+    min-width: 100px;
+    padding: var(--spacing-md);
+}
+
+/* 手机端特别优化 */
+@media (max-width: 480px) {
+    .modal-content {
+        width: 95%;
+        max-width: 95%;
+        padding: var(--spacing-lg);
+        margin: 5vh auto;
+        max-height: 70vh;
+    }
+    
+    #taskInput {
+        font-size: 16px; /* 防止iOS缩放 */
+        padding: 12px;
+    }
+    
+    .modal-buttons {
+        flex-direction: column;
+    }
+    
+    .modal-btn {
+        width: 100%;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    /* 确保快捷短语可见 */
+    .quick-phrases {
+        padding-bottom: 20px;
+    }
+    
+    .phrase-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-sm);
+    }
+}
+
+/* 横屏优化 */
+@media (orientation: landscape) and (max-height: 600px) {
+    .modal-content {
+        max-height: 90vh;
+        margin-top: 5vh;
+    }
+    
+    #editModal .modal-content {
+        max-width: 400px;
+        margin: 5vh auto;
+    }
+}
+
+/* 确保模态框在最上层 */
+.modal {
+    z-index: 2000;
+}
+
+/* 编辑模态框特定样式 */
+#editModal {
+    align-items: flex-start; /* 从顶部开始 */
+    padding-top: 10vh;
+    overflow-y: auto;
+}
+
+/* 输入框优化 */
+#taskInput {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: var(--spacing-md);
+}
+
+.char-count {
+    text-align: right;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-lg);
+}/* 布局更新：模板按钮横向排列 + 编辑界面快捷短语 - 添加于 Wed Mar 18 08:03:23 PM CST 2026 */
+/* 布局更新：模板按钮横向排列 + 编辑界面快捷短语 */
+
+/* 模板按钮横向排列 */
+.template-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.template-btn {
+    flex: 1;
+    min-width: 120px;
+    white-space: nowrap;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.85rem;
+}
+
+/* 编辑界面快捷短语 */
+.edit-quick-phrases {
+    margin: var(--spacing-md) 0;
+    padding: var(--spacing-md);
+    background: var(--light-bg);
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+.edit-quick-phrases h4 {
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.edit-phrase-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-sm);
+}
+
+.edit-phrase-btn {
+    padding: var(--spacing-sm);
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.edit-phrase-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* 响应式调整 */
+@media (max-width: 480px) {
+    .template-buttons {
+        flex-direction: row;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .template-btn {
+        min-width: 110px;
+        font-size: 0.8rem;
+        padding: 10px 12px;
+    }
+    
+    .edit-phrase-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .edit-phrase-btn {
+        font-size: 0.75rem;
+        padding: 8px 6px;
+    }
+}
+
+@media (min-width: 768px) {
+    .template-buttons {
+        justify-content: center;
+    }
+    
+    .template-btn {
+        min-width: 140px;
+    }
+}
+
+/* 横屏优化 */
+@media (orientation: landscape) and (max-height: 600px) {
+    .template-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .template-btn {
+        min-width: 130px;
+        margin-bottom: var(--spacing-sm);
+    }
+}
+
+/* 编辑模态框高度调整（因为有新增内容） */
+#editModal .modal-content {
+    max-height: 85vh;
+}
+
+/* 确保编辑界面布局合理 */
+.modal-content {
+    display: flex;
+    flex-direction: column;
+}
+
+#taskInput {
+    order: 1;
+}
+
+.char-count {
+    order: 2;
+}
+
+.edit-quick-phrases {
+    order: 3;
+}
+
+.modal-buttons {
+    order: 4;
+    margin-top: var(--spacing-lg);
+}/* 全面优化样式 - 添加于 Thu Mar 19 12:07:50 AM CST 2026 */
+/* 全面优化样式 */
+
+/* 1. 快速开始按钮 - 紧凑居中 */
+.template-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: var(--spacing-md);
+    flex-wrap: nowrap;
+    overflow: hidden;
+    width: 100%;
+}
+
+.template-btn {
+    flex: 1;
+    min-width: 0;
+    max-width: 140px;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+
+/* 2. 编辑窗口布局优化 */
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.modal-btn {
+    flex: 1;
+    padding: 12px;
+    font-size: 0.9rem;
+}
+
+/* 编辑快捷短语区域 */
+.edit-quick-phrases {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.edit-phrase-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+.edit-phrase-btn {
+    padding: 8px 6px;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    word-break: break-word;
+}
+
+/* 3. 底部按钮区域优化 */
+.bottom-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.bottom-btn {
+    flex: 1;
+    min-width: 120px;
+    max-width: 180px;
+    padding: 12px;
+    font-size: 0.9rem;
+}
+
+/* 4. 提示语居中 */
+.instructions {
+    text-align: center;
+    margin: 15px 0;
+    padding: 10px;
+    background: var(--light-bg);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* 5. 响应式调整 */
+@media (max-width: 480px) {
+    .template-buttons {
+        gap: 6px;
+    }
+    
+    .template-btn {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+        max-width: 120px;
+    }
+    
+    .edit-phrase-buttons {
+        grid-template-columns: repeat(3, 1fr);
+        max-height: 180px;
+    }
+    
+    .edit-phrase-btn {
+        font-size: 0.7rem;
+        padding: 6px 4px;
+        min-height: 36px;
+    }
+    
+    .modal-buttons {
+        gap: 8px;
+    }
+    
+    .modal-btn {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+    
+    .bottom-buttons {
+        gap: 8px;
+    }
+    
+    .bottom-btn {
+        min-width: 100px;
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .template-buttons {
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .edit-phrase-buttons {
+        grid-template-columns: repeat(6, 1fr);
+    }
+    
+    .bottom-buttons {
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* 6. 编辑窗口高度优化 */
+#editModal .modal-content {
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#taskInput {
+    order: 1;
+}
+
+.char-count {
+    order: 2;
+}
+
+.modal-buttons {
+    order: 3;
+}
+
+.edit-quick-phrases {
+    order: 4;
+}
+
+/* 7. 按钮悬停效果 */
+.template-btn:hover,
+.modal-btn:hover,
+.bottom-btn:hover,
+.edit-phrase-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+/* 8. 已完成格子样式（随机放置时保持不变） */
+.bingo-cell.completed {
+    position: relative;
+    z-index: 2;
+}
+
+.bingo-cell.completed::after {
+    content: '✓';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: var(--success-color);
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* 9. 随机放置按钮特殊样式 */
+#randomPlaceBtn {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    border: none;
+}
+
+#randomPlaceBtn:hover {
+    background: linear-gradient(135deg, #5a0db5 0%, #1c68e8 100%);
+    box-shadow: 0 4px 12px rgba(106, 17, 203, 0.3);
+}
+
+/* 10. 滚动条美化 */
+.edit-phrase-buttons::-webkit-scrollbar {
+    width: 6px;
+}
+
+.edit-phrase-buttons::-webkit-scrollbar-track {
+    background: var(--light-bg);
+    border-radius: 3px;
+}
+
+.edit-phrase-buttons::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.edit-phrase-buttons::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}

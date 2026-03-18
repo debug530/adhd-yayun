@@ -1,0 +1,104 @@
+/* 修复编辑模态框遮挡问题 */
+
+/* 编辑模态框样式修复 */
+#editModal .modal-content {
+    max-height: 80vh; /* 限制最大高度 */
+    overflow-y: auto; /* 允许滚动 */
+    margin-top: 10vh; /* 从顶部开始，留出空间 */
+}
+
+/* 快捷短语区域调整 */
+.quick-phrases {
+    position: relative;
+    z-index: 1; /* 确保在模态框下方 */
+    margin-top: var(--spacing-md);
+}
+
+/* 模态框按钮布局优化 */
+.modal-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+}
+
+.modal-btn {
+    flex: 1;
+    min-width: 100px;
+    padding: var(--spacing-md);
+}
+
+/* 手机端特别优化 */
+@media (max-width: 480px) {
+    .modal-content {
+        width: 95%;
+        max-width: 95%;
+        padding: var(--spacing-lg);
+        margin: 5vh auto;
+        max-height: 70vh;
+    }
+    
+    #taskInput {
+        font-size: 16px; /* 防止iOS缩放 */
+        padding: 12px;
+    }
+    
+    .modal-buttons {
+        flex-direction: column;
+    }
+    
+    .modal-btn {
+        width: 100%;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    /* 确保快捷短语可见 */
+    .quick-phrases {
+        padding-bottom: 20px;
+    }
+    
+    .phrase-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-sm);
+    }
+}
+
+/* 横屏优化 */
+@media (orientation: landscape) and (max-height: 600px) {
+    .modal-content {
+        max-height: 90vh;
+        margin-top: 5vh;
+    }
+    
+    #editModal .modal-content {
+        max-width: 400px;
+        margin: 5vh auto;
+    }
+}
+
+/* 确保模态框在最上层 */
+.modal {
+    z-index: 2000;
+}
+
+/* 编辑模态框特定样式 */
+#editModal {
+    align-items: flex-start; /* 从顶部开始 */
+    padding-top: 10vh;
+    overflow-y: auto;
+}
+
+/* 输入框优化 */
+#taskInput {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: var(--spacing-md);
+}
+
+.char-count {
+    text-align: right;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-lg);
+}
