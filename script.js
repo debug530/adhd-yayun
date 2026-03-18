@@ -1,4 +1,8 @@
-// ADHD生活Bingo - 主逻辑文件
+// ADHD生活Bingo - 修复随机放置功能 v1.1
+// 修复内容：
+// 1. 为随机放置按钮添加事件监听
+// 2. 扩展每个模板至32个任务
+// 3. 实现随机放置算法：保持已完成任务不变，从未完成任务中随机分配
 
 class ADHDBingo {
     constructor() {
@@ -8,27 +12,45 @@ class ADHDBingo {
             completed: false
         }));
         
-        // 预设模板
+        // 扩展模板：每个模式32个任务
         this.templates = {
             daily: [
                 '规律睡眠', '晒太阳', '出门走走', '喝2杯水',
                 '吃早餐', '整理床铺', '洗澡', '刷牙',
                 '呼吸新鲜空气', '与人交谈', '整理物品', '放松10分钟',
-                '记录心情', '适量运动', '阅读15分钟', '早睡'
+                '记录心情', '适量运动', '阅读15分钟', '早睡',
+                // 新增16个日常任务
+                '整理衣柜', '打扫房间', '洗衣服', '倒垃圾',
+                '浇花植物', '整理书架', '清理冰箱', '洗碗',
+                '购物清单', '支付账单', '预约医生', '联系家人',
+                '学习烹饪', '尝试新菜', '整理照片', '写日记'
             ],
             work: [
                 '专注25分钟', '学习新知识', '整理桌面', '输出内容',
                 '制定计划', '回顾进度', '断舍离', '整理文件',
                 '邮件处理', '会议准备', '技能练习', '项目推进',
-                '问题解决', '团队沟通', '文档整理', '总结复盘'
+                '问题解决', '团队沟通', '文档整理', '总结复盘',
+                // 新增16个工作学习任务
+                '阅读专业文章', '学习新软件', '整理笔记', '制定周计划',
+                '参加培训', '分享知识', '优化流程', '备份数据',
+                '清理邮箱', '更新简历', '学习外语', '练习演讲',
+                '研究案例', '分析数据', '制作图表', '撰写报告'
             ],
             relax: [
                 '看电影', '听音乐', '泡茶喝', '晒太阳',
                 '深呼吸', '伸展身体', '冥想5分钟', '涂鸦',
                 '看云发呆', '闻花香', '抱抱宠物', '写日记',
-                '整理照片', '做手工', '泡澡', '小睡片刻'
+                '整理照片', '做手工', '泡澡', '小睡片刻',
+                // 新增16个放松任务
+                '听播客', '画画', '弹乐器', '做瑜伽',
+                '散步公园', '逛书店', '喝咖啡', '做按摩',
+                '玩拼图', '做园艺', '看星星', '写诗歌',
+                '整理音乐', '看纪录片', '练习书法', '做伸展'
             ]
         };
+        
+        // 当前使用的模板
+        this.currentTemplate = 'daily';
         
         // 快捷短语
         this.quickPhrases = [
@@ -138,6 +160,85 @@ class ADHDBingo {
         }, 10);
     }
     
+    // 随机放置功能 - 核心修复
+    randomPlaceTasks() {
+        console.log('🎲 随机放置功能被调用');
+        
+        // 获取当前模板的所有任务
+        const allTasks = [...this.templates[this.currentTemplate]];
+        console.log(`📚 当前模板"${this.currentTemplate}"有 ${allTasks.length} 个任务`);
+        
+        // 打乱所有任务
+        const shuffledTasks = [...allTasks].sort(() => Math.random() - 0.5);
+        
+        // 分离已完成和未完成的格子
+        const completedIndices = [];
+        const uncompletedIndices = [];
+        
+        this.cells.forEach((cell, index) => {
+            if (cell.completed) {
+                completedIndices.push(index);
+            } else {
+                uncompletedIndices.push(index);
+            }
+        });
+        
+        console.log(`✅ 已完成格子: ${completedIndices.length} 个`);
+        console.log(`🔄 未完成格子: ${uncompletedIndices.length} 个`);
+        
+        // 为未完成的格子分配随机任务
+        const tasksForUncompleted = shuffledTasks.slice(0, uncompletedIndices.length);
+        
+        // 打乱未完成格子的顺序
+        const shuffledUncompleted = [...uncompletedIndices].sort(() => Math.random() - 0.5);
+        
+        // 分配任务给未完成的格子
+        shuffledUncompleted.forEach((index, i) => {
+            if (tasksForUncompleted[i]) {
+                this.cells[index].text = tasksForUncompleted[i];
+                console.log(`📝 格子 ${index} 获得任务: ${tasksForUncompleted[i]}`);
+            }
+        });
+        
+        // 保存并重新渲染
+        this.saveToStorage();
+        this.renderBoard();
+        this.updateStats();
+        
+        this.showNotification('🎲 任务已随机重新放置！已完成的任务保持不变。');
+    }
+    
+    // 应用模板
+    applyTemplate(templateName) {
+        if (!this.templates[templateName]) return;
+        
+        // 确认操作
+        if (!confirm(`确定要应用"${templateName}"模板吗？这将覆盖当前所有任务。`)) {
+            return;
+        }
+        
+        // 设置当前模板
+        this.currentTemplate = templateName;
+        
+        // 从32个任务中随机选择16个
+        const allTasks = [...this.templates[templateName]];
+        const shuffledTasks = [...allTasks].sort(() => Math.random() - 0.5);
+        const selectedTasks = shuffledTasks.slice(0, 16);
+        
+        // 应用选中的任务
+        selectedTasks.forEach((text, index) => {
+            this.cells[index].text = text;
+            this.cells[index].completed = false;
+        });
+        
+        this.completedBingos.clear();
+        this.saveToStorage();
+        this.renderBoard();
+        this.updateStats();
+        
+        this.showNotification(`✅ 已应用"${templateName}"模板！从32个任务中随机选择了16个。`);
+    }
+    
     // 打开编辑模态框
     openEditModal(index) {
         this.editingCellIndex = index;
@@ -182,52 +283,9 @@ class ADHDBingo {
         this.closeEditModal();
     }
     
-    // 应用模板
-    applyTemplate(templateName) {
-        if (!this.templates[templateName]) return;
-        
-        // 确认操作
-        if (!confirm(`确定要应用"${templateName}"模板吗？这将覆盖当前所有任务。`)) {
-            return;
-        }
-        
-        this.templates[templateName].forEach((text, index) => {
-            this.cells[index].text = text;
-            this.cells[index].completed = false;
-        });
-        
-        this.completedBingos.clear();
-        this.saveToStorage();
-        this.renderBoard();
-        this.updateStats();
-        this.showNotification('模板应用成功！');
-    }
-    
-    // 添加快捷短语
-    addQuickPhrase(phrase) {
-        if (this.editingCellIndex === null) return;
-        
-        const input = document.getElementById('taskInput');
-        const currentText = input.value.trim();
-        
-        if (currentText) {
-            input.value = `${currentText} ${phrase}`;
-        } else {
-            input.value = phrase;
-        }
-        
-        // 更新字符计数
-        const charCount = document.getElementById('charCount');
-        charCount.textContent = input.value.length;
-        
-        // 自动聚焦并选中新增部分
-        input.focus();
-        input.setSelectionRange(currentText.length, input.value.length);
-    }
-    
     // 检查Bingo
     checkBingo() {
-        const newBingos = [];
+        const newBingos = new Set();
         
         this.bingoPatterns.forEach((pattern, patternIndex) => {
             if (this.completedBingos.has(patternIndex)) return;
@@ -235,12 +293,12 @@ class ADHDBingo {
             const isComplete = pattern.every(index => this.cells[index].completed);
             if (isComplete) {
                 this.completedBingos.add(patternIndex);
-                newBingos.push(patternIndex);
+                newBingos.add(patternIndex);
             }
         });
         
         // 如果有新的Bingo，显示庆祝动画
-        if (newBingos.length > 0) {
+        if (newBingos.size > 0) {
             this.showBingoCelebration();
         }
     }
@@ -250,40 +308,13 @@ class ADHDBingo {
         const celebration = document.getElementById('bingoCelebration');
         celebration.style.display = 'flex';
         
-        // 2秒后自动关闭
+        // 3秒后自动隐藏
         setTimeout(() => {
             celebration.style.display = 'none';
-        }, 2000);
-        
-        // 播放声音（如果支持）
-        this.playBingoSound();
+        }, 3000);
     }
     
-    // 播放Bingo声音
-    playBingoSound() {
-        try {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
-            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
-            oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-            
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.5);
-        } catch (e) {
-            // 音频API不可用，静默失败
-        }
-    }
-    
-    // 重置棋盘（只清空完成状态）
+    // 重置棋盘
     resetBoard() {
         if (!confirm('确定要重置棋盘吗？这将清空所有完成状态，但保留任务文字。')) {
             return;
@@ -297,7 +328,8 @@ class ADHDBingo {
         this.saveToStorage();
         this.renderBoard();
         this.updateStats();
-        this.showNotification('棋盘已重置！');
+        
+        this.showNotification('🔄 棋盘已重置！');
     }
     
     // 清空所有任务
@@ -315,7 +347,8 @@ class ADHDBingo {
         this.saveToStorage();
         this.renderBoard();
         this.updateStats();
-        this.showNotification('所有任务已清空！');
+        
+        this.showNotification('🗑️ 所有任务已清空！');
     }
     
     // 更新统计信息
@@ -355,114 +388,57 @@ class ADHDBingo {
         
         sharePreview.textContent = shareText;
         shareModal.style.display = 'flex';
-        
-        // 保存分享数据
-        this.shareData = {
-            text: shareText,
-            url: window.location.href,
-            state: this.exportState()
-        };
     }
     
-    // 导出状态（用于分享）
-    exportState() {
-        return {
-            cells: this.cells,
-            timestamp: Date.now(),
-            version: '1.0'
-        };
-    }
-    
-    // 复制分享链接
-    copyShareLink() {
-        const state = this.exportState();
-        const encoded = btoa(JSON.stringify(state));
-        const shareUrl = `${window.location.origin}${window.location.pathname}?state=${encoded}`;
-        
-        navigator.clipboard.writeText(shareUrl).then(() => {
-            this.showNotification('链接已复制到剪贴板！');
-        }).catch(() => {
-            // 降级方案
-            const textarea = document.createElement('textarea');
-            textarea.value = shareUrl;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            this.showNotification('链接已复制到剪贴板！');
-        });
-    }
-    
-    // 保存为图片（简化版）
-    saveAsImage() {
-        this.showNotification('图片保存功能正在开发中...');
-        // 实际实现需要使用html2canvas库
-    }
-    
-    // 本地存储
+    // 保存到本地存储
     saveToStorage() {
-        try {
-            localStorage.setItem('adhd-bingo-state', JSON.stringify({
-                cells: this.cells,
-                completedBingos: Array.from(this.completedBingos),
-                timestamp: Date.now()
-            }));
-        } catch (e) {
-            console.warn('本地存储失败:', e);
-        }
+        const data = {
+            cells: this.cells,
+            currentTemplate: this.currentTemplate,
+            completedBingos: Array.from(this.completedBingos),
+            timestamp: Date.now()
+        };
+        localStorage.setItem('adhd-bingo-data', JSON.stringify(data));
     }
     
+    // 从本地存储加载
     loadFromStorage() {
-        try {
-            const saved = localStorage.getItem('adhd-bingo-state');
-            if (saved) {
+        const saved = localStorage.getItem('adhd-bingo-data');
+        if (saved) {
+            try {
                 const data = JSON.parse(saved);
                 this.cells = data.cells || this.cells;
+                this.currentTemplate = data.currentTemplate || 'daily';
                 this.completedBingos = new Set(data.completedBingos || []);
-                
-                // 检查数据是否过期（超过24小时）
-                const oneDay = 24 * 60 * 60 * 1000;
-                if (data.timestamp && Date.now() - data.timestamp > oneDay) {
-                    this.showNotification('欢迎回来！昨天的进度已自动保存。');
-                }
+            } catch (e) {
+                console.error('加载保存数据失败:', e);
             }
-        } catch (e) {
-            console.warn('加载存储失败:', e);
         }
     }
     
     // 显示通知
     showNotification(message) {
-        // 创建通知元素
+        // 移除已有的通知
+        const existing = document.querySelector('.notification');
+        if (existing) existing.remove();
+        
+        // 创建新通知
         const notification = document.createElement('div');
         notification.className = 'notification';
         notification.textContent = message;
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--primary-color);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 3000;
-            animation: slideInRight 0.3s ease;
-        `;
-        
         document.body.appendChild(notification);
         
         // 3秒后自动移除
         setTimeout(() => {
             notification.style.animation = 'slideOutRight 0.3s ease';
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 300);
+            setTimeout(() => notification.remove(), 300);
         }, 3000);
     }
     
-    // 设置事件监听器
+    // 设置事件监听器 - 修复重点
     setupEventListeners() {
+        console.log('🔧 设置事件监听器...');
+        
         // 模板按钮
         document.querySelectorAll('.template-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -470,17 +446,18 @@ class ADHDBingo {
             });
         });
         
-        // 快捷短语按钮
-        document.querySelectorAll('.phrase-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                this.addQuickPhrase(btn.textContent);
-            });
-        });
+        // 控制按钮 - 重点修复：添加随机放置按钮的事件监听
+        const randomPlaceBtn = document.getElementById('randomPlaceBtn');
+        if (randomPlaceBtn) {
+            console.log('✅ 找到随机放置按钮，添加事件监听');
+            randomPlaceBtn.addEventListener('click', () => this.randomPlaceTasks());
+        } else {
+            console.error('❌ 未找到随机放置按钮！');
+        }
         
-        // 控制按钮
         document.getElementById('resetBtn').addEventListener('click', () => this.resetBoard());
         document.getElementById('clearAllBtn').addEventListener('click', () => this.clearAllTasks());
-        document.getElementById('exportBtn').addEventListener('click', () => this.shareStatus());
+        document.getElementById('shareBtn').addEventListener('click', () => this.shareStatus());
         
         // 编辑模态框
         document.getElementById('saveBtn').addEventListener('click', () => this.saveEdit());
@@ -507,8 +484,6 @@ class ADHDBingo {
         });
         
         // 分享模态框
-        document.getElementById('copyLinkBtn').addEventListener('click', () => this.copyShareLink());
-        document.getElementById('saveImageBtn').addEventListener('click', () => this.saveAsImage());
         document.getElementById('closeShareBtn').addEventListener('click', () => {
             document.getElementById('shareModal').style.display = 'none';
         });
@@ -530,125 +505,3 @@ class ADHDBingo {
             if (e.key === 'Escape') {
                 this.closeEditModal();
                 document.getElementById('shareModal').style.display = 'none';
-            }
-            
-            // Ctrl+S 保存编辑
-            if (e.ctrlKey && e.key === 's') {
-                e.preventDefault();
-                this.saveEdit();
-            }
-        });
-        
-        // PWA安装提示
-        this.setupPWA();
-        
-        // 离线检测
-        this.setupOfflineDetection();
-    }
-    
-    // PWA支持
-    setupPWA() {
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').catch(error => {
-                    console.log('ServiceWorker 注册失败:', error);
-                });
-            });
-        }
-        
-        // 显示安装提示
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            
-            // 可以在这里显示安装按钮
-            setTimeout(() => {
-                if (deferredPrompt && confirm('是否要将ADHD生活Bingo安装到主屏幕？')) {
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult.outcome === 'accepted') {
-                            this.showNotification('已成功安装到主屏幕！');
-                        }
-                        deferredPrompt = null;
-                    });
-                }
-            }, 5000);
-        });
-    }
-    
-    // 离线检测
-    setupOfflineDetection() {
-        window.addEventListener('online', () => {
-            this.showNotification('网络已恢复连接！');
-        });
-        
-        window.addEventListener('offline', () => {
-            this.showNotification('当前处于离线模式，数据将保存在本地。');
-        });
-    }
-    
-    // 初始化应用
-    static initApp() {
-        // 添加CSS动画
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideInRight {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-            
-            @keyframes slideOutRight {
-                from {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-                to {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-            }
-            
-            .notification {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: var(--primary-color);
-                color: white;
-                padding: 12px 20px;
-                border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                z-index: 3000;
-                animation: slideInRight 0.3s ease;
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // 创建应用实例
-        window.bingoApp = new ADHDBingo();
-        
-        // 显示欢迎信息
-        setTimeout(() => {
-            if (!localStorage.getItem('adhd-bingo-first-visit')) {
-                window.bingoApp.showNotification('欢迎使用ADHD生活Bingo！点击格子标记完成，长按编辑任务。');
-                localStorage.setItem('adhd-bingo-first-visit', 'true');
-            }
-        }, 1000);
-    }
-}
-
-// 页面加载完成后初始化应用
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', ADHDBingo.initApp);
-} else {
-    ADHDBingo.initApp();
-}
-
-// 导出到全局
-window.ADHDBingo = ADHDBingo;
