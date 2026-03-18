@@ -1,5 +1,5 @@
-// ADHD生活Bingo - 完整修复版本 v1.4
-// 修复所有按钮功能，代码完整无截断
+// ADHD生活Bingo - 修复随机放置逻辑 v1.5
+// 修复：每个未完成任务独立从库里随机获取一次
 
 class ADHDBingo {
     constructor() {
@@ -66,24 +66,46 @@ class ADHDBingo {
         }
     }
     
+    // 修复的随机放置功能 - 每个未完成任务独立随机获取
     randomPlaceTasks() {
+        console.log('🎲 随机放置功能被调用 - 修复版');
+        
+        // 获取当前模板的所有任务
         const allTasks = [...this.templates[this.currentTemplate]];
-        const shuffledTasks = [...allTasks].sort(() => Math.random() - 0.5);
+        console.log(`📚 当前模板"${this.currentTemplate}"有 ${allTasks.length} 个任务`);
+        
+        // 分离已完成和未完成的格子
         const completedIndices = [];
         const uncompletedIndices = [];
+        
         this.cells.forEach((cell, index) => {
-            if (cell.completed) completedIndices.push(index);
-            else uncompletedIndices.push(index);
+            if (cell.completed) {
+                completedIndices.push(index);
+            } else {
+                uncompletedIndices.push(index);
+            }
         });
-        const tasksForUncompleted = shuffledTasks.slice(0, uncompletedIndices.length);
-        const shuffledUncompleted = [...uncompletedIndices].sort(() => Math.random() - 0.5);
-        shuffledUncompleted.forEach((index, i) => {
-            if (tasksForUncompleted[i]) this.cells[index].text = tasksForUncompleted[i];
+        
+        console.log(`✅ 已完成格子: ${completedIndices.length} 个 (保持不变)`);
+        console.log(`🔄 未完成格子: ${uncompletedIndices.length} 个 (需要重新分配)`);
+        
+        // 关键修复：每个未完成任务独立从库里随机获取一次
+        uncompletedIndices.forEach(index => {
+            // 从32个任务中随机选择一个
+            const randomIndex = Math.floor(Math.random() * allTasks.length);
+            const randomTask = allTasks[randomIndex];
+            
+            // 分配随机任务
+            this.cells[index].text = randomTask;
+            console.log(`📝 格子 ${index} 获得随机任务: ${randomTask}`);
         });
+        
+        // 保存并重新渲染
         this.saveToStorage();
         this.renderBoard();
         this.updateStats();
-        this.showNotification('🎲 任务已随机重新放置！已完成的任务保持不变。');
+        
+        this.showNotification('🎲 任务已随机重新放置！每个未完成任务都从库里独立随机获取。');
     }
     
     applyTemplate(templateName) {
@@ -261,35 +283,23 @@ class ADHDBingo {
     }
     
     setupEventListeners() {
-        // 模板按钮
         document.querySelectorAll('.template-btn').forEach(btn => {
             btn.addEventListener('click', () => this.applyTemplate(btn.dataset.template));
         });
-        
-        // 控制按钮
         const randomPlaceBtn = document.getElementById('randomPlaceBtn');
         if (randomPlaceBtn) randomPlaceBtn.addEventListener('click', () => this.randomPlaceTasks());
-        
         const resetBtn = document.getElementById('resetBtn');
         if (resetBtn) resetBtn.addEventListener('click', () => this.resetBoard());
-        
         const clearAllBtn = document.getElementById('clearAllBtn');
         if (clearAllBtn) clearAllBtn.addEventListener('click', () => this.clearAllTasks());
-        
         const shareBtn = document.getElementById('shareBtn');
         if (shareBtn) shareBtn.addEventListener('click', () => this.shareStatus());
-        
-        // 编辑模态框按钮
         const saveBtn = document.getElementById('saveBtn');
         if (saveBtn) saveBtn.addEventListener('click', () => this.saveEdit());
-        
         const clearTextBtn = document.getElementById('clearTextBtn');
         if (clearTextBtn) clearTextBtn.addEventListener('click', () => this.clearCellText());
-        
         const cancelBtn = document.getElementById('cancelBtn');
         if (cancelBtn) cancelBtn.addEventListener('click', () => this.closeEditModal());
-        
-        // 任务输入框
         const taskInput = document.getElementById('taskInput');
         if (taskInput) {
             taskInput.addEventListener('input', () => {
@@ -304,8 +314,6 @@ class ADHDBingo {
                 if (e.key === 'Enter') this.saveEdit();
             });
         }
-        
-        // 分享模态框关闭按钮
         const closeShareBtn = document.getElementById('closeShareBtn');
         if (closeShareBtn) {
             closeShareBtn.addEventListener('click', () => {
@@ -313,8 +321,6 @@ class ADHDBingo {
                 if (shareModal) shareModal.style.display = 'none';
             });
         }
-        
-        // 点击模态框外部关闭
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
@@ -323,8 +329,6 @@ class ADHDBingo {
                 }
             });
         });
-        
-        // 键盘快捷键
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 this.closeEditModal();
